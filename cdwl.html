@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蜀韵成都 · 文化旅游</title>
+    <style>
+        /* ========== 全局重置与变量 ========== */
+        :root {
+            --gold: #C9A96E;
+            --gold-light: #E8D5B7;
+            --gold-dark: #A8854A;
+            --ink: #2C2C2C;
+            --ink-light: #5A5A5A;
+            --bg: #FDFCFA;
+            --font-serif: "Noto Serif SC", "Songti SC", "SimSun", serif;
+            --font-sans: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg);
+            color: var(--ink);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        img,
+        video {
+            display: block;
+            max-width: 100%;
+        }
+        /* ========== 页头 ========== */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 48px;
+            background: rgba(253, 252, 250, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(201, 169, 110, 0.25);
+            transition: background 0.3s ease;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        /* Logo：金色印章风格 */
+        .logo-mark {
+            width: 42px;
+            height: 42px;
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-serif);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: -1px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .logo-mark::after {
+            content: "";
+            position: absolute;
+            inset: 3px;
+            border: 1px solid rgba(201, 169, 110, 0.4);
+            border-radius: 50%;
+        }
+
+        .site-title {
+            font-family: var(--font-serif);
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: var(--ink);
+            white-space: nowrap;
+        }
+
+        .site-title span {
+            color: var(--gold);
+        }
+
+        /* 导航 */
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .main-nav a {
+            font-size: 15px;
+            letter-spacing: 1.5px;
+            color: var(--ink-light);
+            padding: 8px 18px;
+            border-radius: 20px;
+            position: relative;
+            transition: color 0.25s, background 0.25s;
+        }
+
+        .main-nav a:hover {
+            color: var(--gold-dark);
+            background: rgba(201, 169, 110, 0.08);
+        }
+
+        /* 首页高亮 */
+        .main-nav a.active {
+            color: #fff;
+            background: var(--gold);
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(201, 169, 110, 0.35);
+        }
+        /* ========== 全屏轮播 Banner ========== */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            min-height: 520px;
+            overflow: hidden;
+            margin-top: 0;
+        }
+
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+        }
+
+        /* 深色渐变遮罩，确保文字可读 */
+        .hero-slide::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(0, 0, 0, 0.15) 0%,
+                rgba(0, 0, 0, 0.25) 60%,
+                rgba(0, 0, 0, 0.55) 100%
+            );
+        }
+
+        .hero-caption {
+            position: absolute;
+            bottom: 18%;
+            left: 8%;
+            z-index: 2;
+            color: #fff;
+            max-width: 680px;
+        }
+
+        .hero-caption h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(38px, 5vw, 64px);
+            font-weight: 700;
+            letter-spacing: 6px;
+            line-height: 1.25;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        .hero-caption h1 em {
+            font-style: normal;
+            color: var(--gold-light);
+        }
+
+        .hero-caption p {
+            margin-top: 18px;
+            font-size: clamp(15px, 1.3vw, 18px);
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.85);
+            text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 轮播指示器 */
+        .hero-dots {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            display: flex;
+            gap: 14px;
+        }
+
+        .hero-dots button {
+            width: 36px;
+            height: 3px;
+            border: none;
+            background: rgba(255, 255, 255, 0.35);
+            cursor: pointer;
+            border-radius: 2px;
+            transition: background 0.3s, width 0.3s;
+        }
+
+        .hero-dots button.active {
+            background: var(--gold);
+            width: 52px;
+        }
+
+        /* 向下滚动提示 */
+        .scroll-hint {
+            position: absolute;
+            bottom: 32px;
+            right: 48px;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 11px;
+            letter-spacing: 2px;
+        }
+
+        .scroll-hint span {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+
+        .scroll-hint::after {
+            content: "";
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.6), transparent);
+        }
+        /* ========== 内容区通用 ========== */
+        .section {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 100px 32px;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 11px;
+            letter-spacing: 4px;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: clamp(28px, 3vw, 40px);
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--ink);
+            margin-bottom: 24px;
+            position: relative;
+            padding-bottom: 18px;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 48px;
+            height: 2px;
+            background: var(--gold);
+        }
+
+        /* ========== 视频区域 ========== */
+        .video-wrapper {
+            position: relative;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+            background: #000;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+        }
+
+        .video-caption {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 13px;
+            color: var(--ink-light);
+            letter-spacing: 1px;
+        }
+        /* ========== 介绍文字 ========== */
+        .intro-section {
+            padding-top: 0;
+        }
+
+        .intro-grid {
+            display: grid;
+            grid-template-columns: 1fr 2.2fr;
+            gap: 56px;
+            align-items: start;
+        }
+
+        .intro-aside {
+            position: sticky;
+            top: 110px;
+        }
+
+        .intro-aside .section-title {
+            margin-bottom: 0;
+        }
+
+        .intro-aside .section-title::after {
+            left: 0;
+        }
+
+        .intro-stamp {
+            margin-top: 28px;
+            width: 72px;
+            height: 72px;
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-serif);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--gold-dark);
+            letter-spacing: 2px;
+            line-height: 1.3;
+            text-align: center;
+            position: relative;
+        }
+
+        .intro-stamp::after {
+            content: "";
+            position: absolute;
+            inset: 4px;
+            border: 1px solid rgba(201, 169, 110, 0.35);
+            border-radius: 50%;
+        }
+
+        .intro-text {
+            font-size: 16px;
+            line-height: 2;
+            color: var(--ink-light);
+            text-align: justify;
+        }
+
+        .intro-text p {
+            margin-bottom: 18px;
+            text-indent: 2em;
+        }
+
+        .intro-text p:first-child {
+            text-indent: 0;
+        }
+
+        .intro-text strong {
+            color: var(--gold-dark);
+            font-weight: 600;
+        }
+
+        /* ========== 页脚 ========== */
+        .site-footer {
+            border-top: 1px solid rgba(201, 169, 110, 0.2);
+            padding: 48px;
+            text-align: center;
+            background: #F8F6F2;
+        }
+
+        .footer-brand {
+            font-family: var(--font-serif);
+            font-size: 20px;
+            letter-spacing: 6px;
+            color: var(--gold-dark);
+            margin-bottom: 14px;
+        }
+
+        .footer-meta {
+            font-size: 12px;
+            color: #999;
+            letter-spacing: 1px;
+            line-height: 1.9;
+        }
+
+        .footer-meta a {
+            color: var(--gold);
+            border-bottom: 1px dotted var(--gold-light);
+            transition: color 0.2s;
+        }
+
+        .footer-meta a:hover {
+            color: var(--gold-dark);
+        }
+        /* ========== 响应式 ========== */
+        @media (max-width: 860px) {
+            .site-header {
+                padding: 14px 20px;
+            }
+
+            .site-title {
+                font-size: 20px;
+                letter-spacing: 2px;
+            }
+
+            .logo-mark {
+                width: 34px;
+                height: 34px;
+                font-size: 16px;
+            }
+
+            .main-nav a {
+                font-size: 13px;
+                padding: 6px 10px;
+                letter-spacing: 0.5px;
+            }
+
+            .hero-caption {
+                left: 6%;
+                bottom: 22%;
+            }
+
+            .scroll-hint {
+                display: none;
+            }
+
+            .section {
+                padding: 64px 20px;
+            }
+
+            .intro-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .intro-aside {
+                position: static;
+                display: flex;
+                align-items: center;
+                gap: 24px;
+            }
+
+            .intro-stamp {
+                margin-top: 0;
+                width: 56px;
+                height: 56px;
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .main-nav {
+                gap: 0;
+            }
+
+            .main-nav a {
+                font-size: 12px;
+                padding: 5px 7px;
+            }
+
+            .site-title {
+                font-size: 17px;
+            }
+
+            .hero-caption h1 {
+                letter-spacing: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ==================== 页头 ==================== -->
+    <header class="site-header" id="siteHeader">
+        <div class="header-left">
+            <div class="logo-mark" aria-hidden="true">蜀</div>
+            <div class="site-title">蜀韵<span>成都</span></div>
+        </div>
+
+        <nav class="main-nav" aria-label="主导航">
+            <a href=" " class="active" aria-current="page">首页</a >
+            <a href="#">美食</a >
+            <a href="#">景点</a >
+            <a href="#">文化</a >
+            <a href="#">攻略</a >
+        </nav>
+    </header>
+
+    <!-- ==================== 全屏轮播 Banner ==================== -->
+    <section class="hero" id="hero" aria-label="成都风景轮播">
+        <!-- 第一张：宽窄巷子 -->
+        <div class="hero-slide active"
+             style="background-image: url('https://images.unsplash.com/photo-1599571234909-29ed5d1321d6?w=1920&q=85&auto=format&fit=crop');">
+            <div class="hero-caption">
+                <h1>宽窄之间<br><em>最是成都</em></h1>
+                <p>青砖黛瓦，茶香氤氲，慢生活从这里开始</p >
+            </div>
+        </div>
+
+        <!-- 第二张：锦里古街 -->
+        <div class="hero-slide"
+             style="background-image: url('https://images.unsplash.com/photo-1609959538964-8c0c2e5f6a0a?w=1920&q=85&auto=format&fit=crop');">
+            <div class="hero-caption">
+                <h1>锦里灯火<br><em>千年烟火</em></h1>
+                <p>三国遗风与川西民俗在此交织生辉</p >
+            </div>
+        </div>
+
+        <!-- 第三张：天府广场 / 城市天际线 -->
+        <div class="hero-slide"
+             style="background-image: url('https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1920&q=85&auto=format&fit=crop');">
+            <div class="hero-caption">
+                <h1>天府之国<br><em>活力之都</em></h1>
+                <p>雪山下的公园城市，烟火里的幸福成都</p >
+            </div>
+        </div>
+
+        <!-- 轮播指示器 -->
+        <div class="hero-dots" role="tablist" aria-label="轮播图控制">
+            <button class="active" role="tab" aria-selected="true" aria-label="第1张：宽窄巷子"></button>
+            <button role="tab" aria-selected="false" aria-label="第2张：锦里古街"></button>
+            <button role="tab" aria-selected="false" aria-label="第3张：天府广场"></button>
+        </div>
+
+        <div class="scroll-hint" aria-hidden="true">
+            <span>向下探索</span>
+        </div>
+    </section>
+
+    <!-- ==================== 视频区域 ==================== -->
+    <section class="section" id="videoSection">
+        <span class="section-label">Discover Chengdu</span>
+        <h2 class="section-title">这座城市，值得被看见</h2>
+
+        <div class="video-wrapper">
+            <!-- 视频源为外部链接，可直接替换 -->
+            <video controls preload="metadata" poster="https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1280&q=80&auto=format&fit=crop">
+                <source src="https://cdn.pixabay.com/video/2024/09/05/225451_large.mp4" type="video/mp4">
+                您的浏览器不支持 HTML5 视频播放，请更换浏览器。
+            </video>
+        </div>
+        <p class="video-caption">成都城市宣传影像 · 素材来源 Pixabay（免费可商用）</p >
+    </section>
+    <!-- ==================== 介绍文字 ==================== -->
+    <section class="section intro-section" id="introSection">
+        <div class="intro-grid">
+            <aside class="intro-aside">
+                <span class="section-label">About Chengdu</span>
+                <h2 class="section-title">天府之国<br>烟火成都</h2>
+                <div class="intro-stamp">蓉城<br>印记</div>
+            </aside>
+
+            <div class="intro-text">
+                <p>
+                    <strong>成都，别称蓉城、锦城，</strong>是四川省省会，自古享有“天府之国”的美誉。这座城市拥有<strong>4500多年文明史</strong>与<strong>2300多年建城史</strong>，是古蜀文明的重要发源地。都江堰的千年水利工程滋养了广袤的成都平原，武侯祠、杜甫草堂、金沙遗址等文化遗存璀璨夺目，诉说着这座城市的厚重与从容。[reference:0]
+                </p >
+                <p>
+                    成都不仅是国家历史文化名城，更是联合国教科文组织授予的<strong>“世界美食之都”</strong>。麻辣火锅的热烈、龙抄手的鲜香、担担面的醇厚，共同构成了这座城市最生动的味觉记忆。与此同时，成都是全球唯一能遥望<strong>5000米以上雪山</strong>的千万级人口城市，公园城市示范区的建设让绿道纵横、生态宜居，快节奏与慢生活在此达成了奇妙的平衡。[reference:1][reference:2]
+                </p >
+                <p>
+                    包容、闲适而充满活力，是成都最鲜明的城市气质。连续多年获评<strong>“中国最具幸福感城市”</strong>，成都正以“三城三都”建设为牵引，向世界展现天府之国的时代魅力。无论是巷陌里的一碗盖碗茶，还是夜色中的一锅红油，都在邀请你——来成都的街头走一走。[reference:3]
+                </p >
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 页脚 ==================== -->
+    <footer class="site-footer">
+        <div class="footer-brand">蜀韵成都</div>
+        <div class="footer-meta">
+            © 2025 蜀韵成都 · 文化旅游宣传站 &nbsp;|&nbsp; 部分图片与视频素材来源于
+            <a href=" " target="_blank" rel="noopener">Unsplash</a > 与
+            <a href="https://pixabay.com" target="_blank" rel="noopener">Pixabay</a >
+            <br>
+            本页面仅用于前端开发学习与展示
+        </div>
+    </footer>
+
+    <!-- ==================== 轮播脚本 ==================== -->
+    <script>
+        (function () {
+            const slides = document.querySelectorAll('.hero-slide');
+            const dots = document.querySelectorAll('.hero-dots button');
+            let current = 0;
+            let timer = null;
+
+            function goTo(index) {
+                slides[current].classList.remove('active');
+                dots[current].classList.remove('active');
+                dots[current].setAttribute('aria-selected', 'false');
+
+                current = index;
+
+                slides[current].classList.add('active');
+                dots[current].classList.add('active');
+                dots[current].setAttribute('aria-selected', 'true');
+            }
+
+            function next() {
+                goTo((current + 1) % slides.length);
+            }
+
+            function startAuto() {
+                stopAuto();
+                timer = setInterval(next, 5000);
+            }
+
+            function stopAuto() {
+                if (timer) {
+                    clearInterval(timer);
+                    timer = null;
+                }
+            }
+
+            // 点击指示器切换
+            dots.forEach((dot, i) => {
+                dot.addEventListener('click', () => {
+                    goTo(i);
+                    startAuto();
+                });
+            });
+
+            // 鼠标悬停暂停自动轮播
+            const hero = document.getElementById('hero');
+            hero.addEventListener('mouseenter', stopAuto);
+            hero.addEventListener('mouseleave', startAuto);
+
+            // 启动
+            startAuto();
+        })();
+    </script>
+
+</body>
+</html>
